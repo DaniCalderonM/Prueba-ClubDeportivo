@@ -81,9 +81,9 @@ app.get('/agregar', (req, res) => {
         nombre = minusculas(nombre);
 
         let { deportes } = leerJSON();
-        let buscarDeporte = deportes.find(deporte => deporte.nombre == nombre);
+        let indiceDeporte = encontrarPorNombre(nombre, deportes);
 
-        if (buscarDeporte) {
+        if (indiceDeporte !== -1) {
             console.log(`El deporte ${nombre} ya existe, no puede volver a ingresarlo`);
             return res.send(`El deporte ${nombre} ya existe, no puede volver a ingresarlo`);
         } else {
@@ -118,7 +118,7 @@ app.get('/editar', (req, res) => {
             return res.send(`El Deporte ${nombre} no existe`);
         } else {
             console.log(`Deporte ${nombre} editado con exito`);
-            deportes[deporteIndex].precio = precio;
+            //deportes[deporteIndex].precio = precio;
         }
 
         escribirJSON(deportes, res, `Deporte ${nombre} editado`);

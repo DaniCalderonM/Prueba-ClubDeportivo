@@ -74,16 +74,13 @@ app.get("/deportes", (req, res) => {
 app.get('/agregar', (req, res) => {
     try {
         let { nombre, precio } = req.query;
-
         if (!nombre || !precio) {
             return res.status(400).send("Faltan parámetros, se requiere nombre y precio");
         }
         nombre = minusculas(nombre);
-
         let { deportes } = leerJSON();
-        let indiceDeporte = encontrarPorNombre(nombre, deportes);
-
-        if (indiceDeporte !== -1) {
+        let busqueda = encontrarPorNombre(nombre, deportes);
+        if (busqueda !== -1) {
             console.log(`El deporte ${nombre} ya existe, no puede volver a ingresarlo`);
             return res.send(`El deporte ${nombre} ya existe, no puede volver a ingresarlo`);
         } else {
@@ -107,20 +104,16 @@ app.get('/editar', (req, res) => {
         if (!nombre || !precio) {
             return res.status(400).send("Faltan parámetros, se requiere nombre y nuevo precio");
         }
-
         nombre = minusculas(nombre);
-
         let { deportes } = leerJSON();
-        let deporteIndex = encontrarPorNombre(nombre, deportes);
-
-        if (deporteIndex == -1) {
+        let busqueda = encontrarPorNombre(nombre, deportes);
+        if (busqueda == -1) {
             console.log(`El Deporte ${nombre} no existe`);
             return res.send(`El Deporte ${nombre} no existe`);
         } else {
             console.log(`Deporte ${nombre} editado con exito`);
-            deportes[deporteIndex].precio = precio;
+            deportes[busqueda].precio = precio;
         }
-
         escribirJSON(deportes, res, `Deporte ${nombre} editado con exito`);
     } catch (error) {
         console.error("Error en la ruta /editar:", error.message);
@@ -136,10 +129,8 @@ app.get('/eliminar/:nombre', (req, res) => {
             return res.status(400).send("Faltan parámetros, se requiere nombre");
         }
         nombre = minusculas(nombre);
-
         let { deportes } = leerJSON();
         let busqueda = encontrarPorNombre(nombre, deportes);
-
         if (busqueda == -1) {
             console.log(`El deporte ${nombre} no existe`);
             return res.send(`El deporte ${nombre} no existe`)
@@ -147,7 +138,6 @@ app.get('/eliminar/:nombre', (req, res) => {
             console.log(`Deporte ${nombre} eliminado`);
             deportes.splice(busqueda, 1);
         }
-
         escribirJSON(deportes, res, `Deporte ${nombre} eliminado con exito`);
     } catch (error) {
         console.error("Error en la ruta /eliminar/:nombre:", error.message);

@@ -1,15 +1,10 @@
+// Importaciones
 const express = require('express');
 const fs = require('fs');
+// Instanciamos express
 const app = express();
+// Definimos el puerto
 const PORT = 3000;
-
-app.listen(PORT, () => {
-    console.log(`Servidor Express iniciado en el puerto ${PORT}`);
-})
-
-app.get("/", (req, res) => {
-    res.sendFile(__dirname + "/index.html")
-})
 
 // Función para leer el archivo JSON
 function leerJSON() {
@@ -25,7 +20,7 @@ function leerJSON() {
 // Función para escribir en el archivo JSON
 function escribirJSON(deportes, res, mensaje) {
     try {
-        fs.writeFileSync("Deportes.json", JSON.stringify({deportes}));
+        fs.writeFileSync("Deportes.json", JSON.stringify({ deportes }));
         console.log(mensaje);
         res.send(mensaje);
     } catch (error) {
@@ -34,22 +29,34 @@ function escribirJSON(deportes, res, mensaje) {
     }
 }
 
-// Función para encontrar el índice de un deporte por nombre
+// Función para encontrar el indice de un deporte por nombre
 function encontrarPorNombre(nombre, data) {
     return data.findIndex((elem) => elem.nombre === nombre);
 }
 
+// Función para pasar a minisculas
 function minusculas(nombre) {
     return nombre.toLowerCase();
 }
 
-//Rutas: /deportes, /agregar, /editar, /eliminar
+// Levantar servidor
+app.listen(PORT, () => {
+    console.log(`Servidor Express iniciado en el puerto ${PORT}`);
+})
 
+// Ruta raiz
+app.get("/", (req, res) => {
+    res.sendFile(__dirname + "/index.html")
+})
+
+//Rutas: /deportes, /agregar, /editar, /eliminar
+// Ruta deportes
 app.get("/deportes", (req, res) => {
     const data = leerJSON();
     res.send(data);
 })
 
+// Ruta agregar
 app.get('/agregar', (req, res) => {
     try {
         let { nombre, precio } = req.query;
@@ -59,7 +66,7 @@ app.get('/agregar', (req, res) => {
         }
         nombre = minusculas(nombre);
 
-        let {deportes} = leerJSON();
+        let { deportes } = leerJSON();
         let buscarDeporte = deportes.find(deporte => deporte.nombre == nombre);
 
         if (buscarDeporte) {
@@ -79,6 +86,7 @@ app.get('/agregar', (req, res) => {
     }
 });
 
+// Ruta editar
 app.get('/editar', (req, res) => {
     try {
         let { nombre, precio } = req.query;
@@ -106,6 +114,7 @@ app.get('/editar', (req, res) => {
     }
 });
 
+// Ruta eliminar
 app.get('/eliminar/:nombre', (req, res) => {
     try {
         let nombre = req.params.nombre;
@@ -114,7 +123,7 @@ app.get('/eliminar/:nombre', (req, res) => {
         }
         nombre = minusculas(nombre);
 
-        let {deportes} = leerJSON();
+        let { deportes } = leerJSON();
         let busqueda = encontrarPorNombre(nombre, deportes);
 
         if (busqueda == -1) {
@@ -132,6 +141,7 @@ app.get('/eliminar/:nombre', (req, res) => {
     }
 });
 
+// Ruta generica para manejar rutas no definidas
 app.get("*", (req, res) => {
     res.send("Esta página no existe...");
 });

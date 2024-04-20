@@ -14,8 +14,8 @@ app.get("/", (req, res) => {
 // Función para leer el archivo JSON
 function leerJSON() {
     try {
-        const data = fs.readFileSync("Deportes.json", "utf8");
-        return JSON.parse(data);
+        const deportes = fs.readFileSync("Deportes.json", "utf8");
+        return JSON.parse(deportes);
     } catch (error) {
         console.error("Error al leer el archivo Json: ", error.message);
         return [];
@@ -59,7 +59,7 @@ app.get('/agregar', (req, res) => {
         }
         nombre = minusculas(nombre);
 
-        let deportes = leerJSON();
+        let {deportes} = leerJSON();
         let buscarDeporte = deportes.find(deporte => deporte.nombre == nombre);
 
         if (buscarDeporte) {
@@ -114,18 +114,18 @@ app.get('/eliminar/:nombre', (req, res) => {
         }
         nombre = minusculas(nombre);
 
-        let data = leerJSON();
-        let busqueda = encontrarPorNombre(nombre, data);
+        let {deportes} = leerJSON();
+        let busqueda = encontrarPorNombre(nombre, deportes);
 
         if (busqueda == -1) {
             console.log(`El deporte ${nombre} no existe`);
             return res.send(`El deporte ${nombre} no existe`)
         } else {
             console.log(`Deporte ${nombre} eliminado`);
-            data.splice(busqueda, 1);
+            deportes.splice(busqueda, 1);
         }
 
-        escribirJSON(data, res, `Deporte ${nombre} eliminado con exito`);
+        escribirJSON(deportes, res, `Deporte ${nombre} eliminado con exito`);
     } catch (error) {
         console.error("Error en la ruta /eliminar/:nombre:", error.message);
         return res.status(500).send("Error interno del servidor");

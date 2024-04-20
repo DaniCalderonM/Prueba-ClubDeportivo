@@ -121,7 +121,7 @@ app.get('/editar', (req, res) => {
             deportes[deporteIndex].precio = precio;
         }
 
-        escribirJSON(deportes, res, `Deporte ${nombre} editado`);
+        escribirJSON(deportes, res, `Deporte ${nombre} editado con exito`);
     } catch (error) {
         console.error("Error en la ruta /editar:", error.message);
         return res.status(500).send("Error interno del servidor");

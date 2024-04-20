@@ -118,7 +118,7 @@ app.get('/editar', (req, res) => {
             return res.send(`El Deporte ${nombre} no existe`);
         } else {
             console.log(`Deporte ${nombre} editado con exito`);
-            //deportes[deporteIndex].precio = precio;
+            deportes[deporteIndex].precio = precio;
         }
 
         escribirJSON(deportes, res, `Deporte ${nombre} editado`);

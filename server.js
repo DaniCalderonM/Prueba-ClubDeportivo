@@ -8,14 +8,28 @@ const PORT = 3000;
 
 // Función para leer el archivo JSON
 function leerJSON() {
+    const archivo = "Deportes.json";
     try {
-        const deportes = fs.readFileSync("Deportes.json", "utf8");
-        return JSON.parse(deportes);
+        if (fs.existsSync(archivo)) {
+            const deportes = fs.readFileSync(archivo, "utf8");
+            return JSON.parse(deportes);
+        } else {
+            // Si el archivo no existe, creamos un archivo vacio
+            fs.writeFileSync(archivo, JSON.stringify({ deportes: [] }));
+            console.log("Archivo JSON creado correctamente.");
+            // Luego, intentamos leer el archivo nuevamente
+            return leerJSON();
+        }
     } catch (error) {
-        console.error("Error al leer el archivo Json: ", error.message);
-        return [];
+        if (error.code == 'ENOENT') {
+            console.error("El archivo no existe");
+            res.status(404).send("El archivo no existe en el servidor");
+        } else {
+            console.error("Error al leer el archivo Json: ", error.message);
+        }
     }
 }
+
 
 // Función para escribir en el archivo JSON
 function escribirJSON(deportes, res, mensaje) {
